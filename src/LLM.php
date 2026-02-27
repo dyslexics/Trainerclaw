@@ -5,19 +5,25 @@ require_once __DIR__ . '/../config/config.php';
 class LLM
 {
     private const API_URL = 'https://api.anthropic.com/v1/messages';
-    private const MODEL = 'claude-haiku-3-5';
+    private const MODEL = 'claude-haiku-4-5-20251001';
     private const MAX_TOKENS = 1024;
 
-    public static function sendMessage(string $userMessage, array $conversationHistory = []): string
+    public static function sendMessage(string $userMessage, array $conversationHistory = [], string $systemPrompt = ''): string
     {
         $messages = $conversationHistory;
         $messages[] = ['role' => 'user', 'content' => $userMessage];
 
-        $body = json_encode([
+        $payload = [
             'model' => self::MODEL,
             'max_tokens' => self::MAX_TOKENS,
             'messages' => $messages,
-        ]);
+        ];
+
+        if ($systemPrompt !== '') {
+            $payload['system'] = $systemPrompt;
+        }
+
+        $body = json_encode($payload);
 
         $ch = curl_init(self::API_URL);
         curl_setopt_array($ch, [

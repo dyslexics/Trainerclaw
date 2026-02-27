@@ -117,8 +117,12 @@ $routes = [
             }
 
             try {
+                $systemPrompt = 'Du bist OpenClaw, ein spezialisierter KI-Assistent für diplomierte Legasthenietrainer. '
+                    . 'Du kennst die AFS-Methode (Aufmerksamkeit, Funktion, Symptom), alle EÖDL-Ausbildungsinhalte, '
+                    . 'pädagogische Diagnostik, Trainingsplanung und Elterngesprächsführung. '
+                    . 'Antworte immer auf Deutsch, präzise und fachlich korrekt.';
                 $context = Chat::getConversationContext($userId);
-                $response = LLM::sendMessage($message, $context);
+                $response = LLM::sendMessage($message, $context, $systemPrompt);
 
                 Chat::saveMessage($userId, 'user', $message);
                 Chat::saveMessage($userId, 'assistant', $response);
